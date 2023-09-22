@@ -1,0 +1,56 @@
+@page "/CreateInventory"
+@using InventoryApp.Models
+@using System.Text.Json
+@using System.Text.Json.Serialization
+@using System.Net.Http.Json
+@inject HttpClient Http
+
+<div class="wrapper">
+    <form class="form">
+      <div class="pageTitle title">Create Inventory</div>
+      <div class="secondaryTitle title">Please fill this form to create new item</div>
+      <input type="text" class="name formEntry" placeholder="Product Name" @bind-value="createProduct.productName" />
+      <input type="number" class="email formEntry" placeholder="Amount" @bind-value="createProduct.productAmount" />
+      <input type="text" class="name formEntry" placeholder="Location" @bind-value="createProduct.productLocation" />
+      <input type="text" class="name formEntry" placeholder="Barcode" @bind-value="createProduct.productBarcode" />
+      <button class="submit formEntry" @onclick="CreateProduct">Submit</button>
+    </form>
+  </div>
+
+  <button class="returnRoot" @onclick="RedirectToHome">Home</button>
+
+
+@code 
+{
+
+  [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void RedirectToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+
+Product createProduct = new Product();
+
+protected async Task CreateProduct()
+{
+  try 
+  {
+    var data = new { 
+    productName = createProduct.productName, 
+    productAmount = createProduct.productAmount, 
+    productLocation = createProduct.productLocation, 
+    productBarcode = createProduct.productBarcode
+    };
+
+    await Http.PostAsJsonAsync("http://localhost:5001/api/Product", data);
+  }
+  catch (Exception ex)
+  {
+    Console.WriteLine($"An error occurred: {ex.Message}");
+  }
+  
+}
+}
+  

@@ -1,0 +1,86 @@
+@page "/UpdateInventory"
+@using InventoryApp.Models
+@using System.Text.Json
+@using System.Net.Http.Json
+@using System.Net.Http.Headers
+@inject IHttpClientFactory _httpClient
+   
+<div class="wrapper">
+    <form class="form">
+        <div class="pageTitle title">Create Inventory</div>
+        <div class="secondaryTitle title">Please fill this form to update item</div>
+        <input type="text" class="name formEntry" placeholder="Product Id" @bind-value="createProduct._id" />
+        <input type="text" class="name formEntry" placeholder="Product Name" @bind-value="createProduct.productName" />
+        <input type="number" class="email formEntry" placeholder="Amount" @bind-value="createProduct.productAmount" />
+        <input type="text" class="name formEntry" placeholder="Location" @bind-value="createProduct.productLocation" />
+        <input type="text" class="name formEntry" placeholder="Barcode" @bind-value="createProduct.productBarcode" />
+        <button class="submit formEntry" @onclick="UpdateProduct">Submit</button>
+    </form>
+</div>
+
+<button class="returnRoot" @onclick="RedirectToHome">Home</button>
+
+@code {
+
+
+
+Product createProduct = new Product();
+
+[Inject]
+private NavigationManager NavigationManager { get; set; }
+
+private void RedirectToHome()
+{
+    NavigationManager.NavigateTo("/");
+}
+
+protected async Task UpdateProduct()
+{
+    var httpClient = _httpClient.CreateClient();
+
+    try
+    {
+        var data = new { 
+        _id = createProduct._id, 
+        productName = createProduct.productName, 
+        productAmount = createProduct.productAmount, 
+        productLocation = createProduct.productLocation, 
+        productBarcode = createProduct.productBarcode
+        };
+
+        var json = JsonSerializer.Serialize(data);
+        var content = new StringContent(json);
+        content.Headers.ContentType = new MediaTypeHeaderValue("application/json");
+
+        using var httpResponseMessage =
+        await httpClient.PutAsync($"http://localhost:5001/api/Product/{createProduct._id}", content);
+
+        httpResponseMessage.EnsureSuccessStatusCode();
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+    }
+}
+/*
+protected async Task UpdateProduct()
+{
+    try 
+    {
+        var data = new { 
+        _id = createProduct._id, 
+        productName = createProduct.productName, 
+        productAmount = createProduct.productAmount, 
+        productLocation = createProduct.productLocation, 
+        productBarcode = createProduct.productBarcode
+        };
+        await Http.PutAsJsonAsync("http://localhost:5001/api/Product", data);
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"An error occurred: {ex.Message}");
+    }
+    
+}
+*/
+}
