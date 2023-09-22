@@ -1,0 +1,81 @@
+@page "/MyInventory"
+@using System.Text.Json
+@using InventoryApp.Models
+@inject IHttpClientFactory ClientFactory
+
+@if (products == null)
+{
+    <p><em>Fetching data ...</em></p>
+}
+else
+{
+    <div class="centerdiv">
+        <table>
+            <thead>
+                <tr>
+                    <td>Id</td>
+                    <td>Name</td>
+                    <td>Amount</td>
+                    <td>Location</td>
+                    <td>Barcode</td>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var product in products)
+                {
+                    <tr>
+                        <td>@product._id</td>
+                        <td>@product.productName</td>
+                        <td>@product.productAmount</td>
+                        <td>@product.productLocation</td>
+                        <td>@product.productBarcode</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <button class="returnRoot" @onclick="RedirectToHome">Home</button>
+    
+}
+
+
+
+@code {
+
+    [Inject]
+    private NavigationManager NavigationManager { get; set; }
+
+    private void RedirectToHome()
+    {
+        NavigationManager.NavigateTo("/");
+    }
+    private IEnumerable<Product> products = Array.Empty<Product>();
+    private bool getProductsError;
+    private bool shouldRender;
+
+    protected override bool ShouldRender() => shouldRender;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var request = new HttpRequestMessage(HttpMethod.Get,
+            "http://localhost:5001/api/Product");
+
+        var client = ClientFactory.CreateClient();
+
+        var response = await client.SendAsync(request);
+
+        if (response.IsSuccessStatusCode)
+        {
+            using var responseStream = await response.Content.ReadAsStreamAsync();
+            products = await JsonSerializer.DeserializeAsync
+                <IEnumerable<Product>>(responseStream);
+        }
+        else
+        {
+            getProductsError = true;
+        }
+
+        shouldRender = true;
+    }
+}
