@@ -1,8 +1,19 @@
-# BasicInventorySystem
+# Basic Scoreboard System
 
-A basic inventory system made with webapi and blazor server.
-it uses an api that have connection to a db, here it's MongoDB.
-And uses BlazorServer as a UX.
+This started as a copy from one of my other projects, BasicInventorySystem,
+and that is clear in the source code as well.
+
+The aim of this project is to create a simple scoreboard system that you can host yourself.
+And I will try to host a website that you can use for your small projects also.
+
+The principle is then, an API that you can do CRUD towards.
+In the Create you need to input:
+userName, scoreAmmount, gameID
+
+And for Read you would need to ask for eiher one of these.
+Update and Delete is something I think should not be on this API.
+That is because I have not implemented an authorisation yet.
+
 
 ---
 
