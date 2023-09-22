@@ -1,6 +1,6 @@
 # Basic Scoreboard System
 
-This started as a copy from one of my other projects, BasicInventorySystem,
+This started as a copy from one of my other projects, [BasicInventorySystem](https://github.com/Te3Que/BasicInventorySystem),
 and that is clear in the source code as well.
 
 The aim of this project is to create a simple scoreboard system that you can host yourself.
