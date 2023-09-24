@@ -4,7 +4,7 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:7.0 AS restore
 WORKDIR /src
-COPY ["SRC/InventoryAPI/InventoryAPI.csproj", "."]
+COPY ["src/InventoryAPI/InventoryAPI.csproj", "."]
 RUN dotnet restore "InventoryAPI.csproj"
 
 FROM restore AS build
